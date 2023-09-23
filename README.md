@@ -1,37 +1,60 @@
 # fastapi-template
 
-#### 介绍
+## 介绍
 fastapi项目简易模板
 
-#### 软件架构
-软件架构说明
+<br />
 
+## 目录结构
 
-#### 安装教程
+```tex
+├── controller										controller控制层
+│    ├── user_controller
+│    └── ...
+├── db												sql脚本存放目录
+│    ├── 1.0.0										按版本号归档
+│    │    └── user.py
+│    └── ...
+├── lib												相关辅助/工具类
+│    ├── logging_helper.py							日志配置类
+│    ├── mysql_helper.py							mysql辅助类
+│    └── utils.py									常用函数
+├── logs											日志存放目录
+│    └── ...
+├── model											model实体层
+│    ├── base.py									ORM基础类/业务基础类
+│    ├── error.py									自定义异常相关
+│    ├── user.py
+│    └── ...
+├── service											service业务服务层
+│    └── ...
+├── sql												dao数据访问层
+│    ├── user_dao.py
+│    └── ...
+├── .gitignore										git忽略文件
+├── main.py											入口文件
+├── README.md										项目说明
+├── requirements.py									项目依赖说明
+└── setting.py										配置文件
+```
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+项目中`user`相关内容为示例代码，进行开发时请删除
 
-#### 使用说明
+<br />
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## 启动项目
 
-#### 参与贡献
+### 1.安装依赖
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+```python
+pip install -r requirements.txt
+```
 
+### 2.运行项目
 
-#### 特技
+```python
+python main.py
+```
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+<br />
+
