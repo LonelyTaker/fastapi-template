@@ -35,10 +35,11 @@ class LoggingHelper(object):
         @wraps(func)
         async def inner(request: Request, *args, **kwargs):
             start_time = time.time()
-            if request.headers.get('content-type').startswith('application/json'):
+            content_type = request.headers.get('content-type')
+            if isinstance(content_type, str) and content_type.startswith('application/json'):
                 params = await request.body()
                 cls.__logger.info(f"{request.url.path} request params: {json.loads(params)}")
-            elif request.headers.get('content-type').startswith('multipart/form-data'):
+            elif isinstance(content_type, str) and content_type.startswith('multipart/form-data'):
                 cls.__logger.info(f"{request.url.path} request params: form-data")
             else:
                 cls.__logger.info(f"{request.url.path} request params: unknown")
