@@ -25,6 +25,10 @@ LOGS_PATH = "./logs"
 #     'group': ''
 # }
 
+# token相关
+TOKEN_SECRET_KEY = ""  # 生成jwt的key
+TOKEN_EXPIRATION = 24 * 60 * 60  # token过期时间
+
 # mysql配置
 MYSQL_INFO = {
     # 连接地址

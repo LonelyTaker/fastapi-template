@@ -22,6 +22,8 @@ class ErrorCode(Enum):
     ConfigError = (1000, "配置错误")
     ParamsError = (1001, "参数错误")
     ServiceError = (1002, "服务异常")  # 服务不可用，或请求下游服务异常
+    TokenError = (1010, "token错误")
+    TokenExpError = (1011, "token过期")
     LockError = (1099, "系统繁忙")  # 未抢占到锁
     # 项目特殊错误码
     UserAddError = (1101, "用户创建失败")
