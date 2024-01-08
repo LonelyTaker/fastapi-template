@@ -61,7 +61,10 @@ class AuthService(object):
         :param uid: 用户id
         """
         # RedisHelper.delete(uid)
-        del account_token_map[uid]
+        try:
+            del account_token_map[uid]
+        except Exception:
+            pass
 
     @classmethod
     def get_token(cls, uid) -> str:
@@ -71,7 +74,7 @@ class AuthService(object):
         :return: token
         """
         # return RedisHelper.get(uid)
-        # 判断是否过期
+        # 判断是否过期（非线程安全）
         _temp = account_token_map.get(uid)
         if _temp:
             if _temp.get("exp") < datetime.utcnow().timestamp():
