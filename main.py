@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
     pass
 
 
-app = FastAPI(routes=router.routes)
+app = FastAPI(routes=router.routes, lifespan=lifespan)
 
 
 # 错误拦截（参数校验失败）
