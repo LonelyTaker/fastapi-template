@@ -12,8 +12,22 @@ from controller import router
 from model import BaseError, ErrorCode
 from setting import SERVICE_IP, SERVICE_PORT
 
-app = FastAPI(routes=router.routes)
 logger = logging.getLogger()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 项目启动
+    LoggingHelper.init()  # 配置日志器
+    MysqlHelper.init()  # 创建数据库连接
+
+    yield
+
+    # 项目关闭
+    pass
+
+
+app = FastAPI(routes=router.routes)
 
 
 # 错误拦截（参数校验失败）
@@ -42,21 +56,6 @@ async def exception_handler(request: Request, exc: Exception):
     return JSONResponse(status_code=200,
                         content={"code": ErrorCode.UnexpectedError.value[0], "msg": ErrorCode.UnexpectedError.value[1],
                                  "data": None})
-
-
-# 项目启动
-@app.on_event(r'startup')
-async def startup_event():
-    # 配置日志器
-    LoggingHelper.init()
-    # 创建数据库连接
-    MysqlHelper.init()
-
-
-# 项目关闭
-@app.on_event(r'shutdown')
-async def shutdown_event():
-    pass
 
 
 if __name__ == "__main__":
