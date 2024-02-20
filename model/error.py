@@ -30,3 +30,5 @@ class ErrorCode(Enum):
     UserDelError = (1102, "用户删除失败")
     UserUpdateError = (1103, "用户信息更新失败")
     UserListError = (1104, "查询用户列表失败")
+    AccountNotFountError = (1201, "用户不存在")
+    AccountPwdError = (1202, "密码错误")
