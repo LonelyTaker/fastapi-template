@@ -44,17 +44,41 @@ fastapi项目简易模板
 
 ## 启动项目
 
-### 1.安装依赖
+### 虚拟环境启动
+
+#### 1.安装依赖
 
 ```python
 pip install -r requirements.txt
 ```
 
-### 2.运行项目
+#### 2.运行项目
 
 ```python
 python main.py
+# 后台运行
+nohup python main.py > /dev/null 2>&1 &
 ```
 
 <br />
+
+### docker启动
+
+项目目录：`/data/container/fastapi-template`
+
+#### 1.构建镜像
+
+```shell
+docker build -t fastapi-template:latest .
+```
+
+注意最后的点（当前文件夹）
+
+#### 2.docker-compose运行
+
+```shell
+docker-compose up
+# 后台运行
+docker-compose up -d
+```
 

@@ -1,0 +1,11 @@
+services:
+  fastapi-template:
+    container_name: fastapi-template
+    image: fastapi-template:latest
+    command: python3 main.py
+    network_mode: host
+    volumes:
+      - /data/container/fastapi-template:/usr/local/app
+    # ports:
+    #   - 7866:7866
+    restart: always
