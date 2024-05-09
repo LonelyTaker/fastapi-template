@@ -4,7 +4,7 @@ from enum import Enum, unique
 
 # 自定义错误类型
 class BaseError(Exception):
-    def __init__(self, code: int, msg: str, scene: str):
+    def __init__(self, code: int, msg: str, scene: str = ""):
         self.code = code
         self.msg = msg
         self.scene = scene
