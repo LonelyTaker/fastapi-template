@@ -1,19 +1,20 @@
 import contextlib
 from asyncio import current_task
-from sqlalchemy.ext.asyncio import \
-    create_async_engine, \
-    AsyncEngine, \
-    AsyncSession, \
-    async_scoped_session, \
-    async_sessionmaker
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    AsyncEngine,
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
+)
 
 from setting import MYSQL_INFO
 
 
 # mysql工具类
 class MysqlHelper(object):
-    __engine: AsyncEngine = None
-    __ScopedSession = None
+    __engine: AsyncEngine
+    __ScopedSession: async_scoped_session
 
     @classmethod
     async def depends_async_session(cls):
@@ -34,12 +35,14 @@ class MysqlHelper(object):
             await cls.__ScopedSession.remove()
 
     @classmethod
-    def init(cls):
+    async def init(cls):
         if cls.__engine:
-            cls.__engine.dispose()
+            await cls.__engine.dispose()
         # 创建引擎
         cls.__engine = create_async_engine(**MYSQL_INFO)
         # 创建会话
         session_factory = async_sessionmaker(bind=cls.__engine)
         # 使用scoped_session维护session
-        cls.__ScopedSession = async_scoped_session(session_factory, scopefunc=current_task)
+        cls.__ScopedSession = async_scoped_session(
+            session_factory, scopefunc=current_task
+        )

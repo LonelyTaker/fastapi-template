@@ -27,7 +27,9 @@ async def get_list(session: AsyncSession, payload):
     page_no = payload.pageNo
     page_size = payload.pageSize
 
-    query_list_result = await session.execute(select(User).offset((page_no - 1) * page_size).limit(page_size))
+    query_list_result = await session.execute(
+        select(User).offset((page_no - 1) * page_size).limit(page_size)
+    )
     query_list = query_list_result.scalars().all()
     query_count_result = await session.execute(select(func.count(User.id)))
     query_count = query_count_result.scalar()

@@ -5,6 +5,7 @@ from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from lib.mysql_helper import MysqlHelper
+
 # from lib.redis_helper import RedisHelper
 
 from model import BaseError, ErrorCode
@@ -34,7 +35,7 @@ class AuthService(object):
         data = {
             "uid": uid,
             **payload,
-            "exp": datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION)  # 过期时间
+            "exp": datetime.utcnow() + timedelta(seconds=TOKEN_EXPIRATION),  # 过期时间
         }
         return jwt.encode(data, TOKEN_SECRET_KEY, algorithm="HS256")
 
@@ -47,12 +48,20 @@ class AuthService(object):
         """
         try:
             payload = jwt.decode(token, TOKEN_SECRET_KEY, algorithms=["HS256"])
-            logger.info(f'token解析信息：{payload}')
+            logger.info(f"token解析信息：{payload}")
             return payload
         except jwt.ExpiredSignatureError:  # token已过期
-            raise BaseError(code=ErrorCode.TokenExpError.value[0], msg=ErrorCode.TokenExpError.value[1], scene="decode_token")
+            raise BaseError(
+                code=ErrorCode.TokenExpError.value[0],
+                msg=ErrorCode.TokenExpError.value[1],
+                scene="decode_token",
+            )
         except jwt.InvalidTokenError:  # 无效token
-            raise BaseError(code=ErrorCode.TokenError.value[0], msg=ErrorCode.TokenError.value[1], scene="decode_token")
+            raise BaseError(
+                code=ErrorCode.TokenError.value[0],
+                msg=ErrorCode.TokenError.value[1],
+                scene="decode_token",
+            )
 
     @classmethod
     def del_token(cls, uid):
@@ -67,7 +76,7 @@ class AuthService(object):
             pass
 
     @classmethod
-    def get_token(cls, uid) -> str:
+    def get_token(cls, uid) -> str | None:
         """
         获取token
         :param uid: 用户id
@@ -90,10 +99,7 @@ class AuthService(object):
         :param token: token
         """
         # RedisHelper.set(uid, token, ex=TOKEN_EXPIRATION)
-        account_token_map[uid] = {
-            "token": token,
-            "exp": TOKEN_EXPIRATION
-        }
+        account_token_map[uid] = {"token": token, "exp": TOKEN_EXPIRATION}
 
     @classmethod
     async def check_token(cls, token) -> Account:
@@ -103,32 +109,54 @@ class AuthService(object):
         :return: 校验通过返回用户信息
         """
         if not token:
-            raise BaseError(code=ErrorCode.TokenError.value[0], msg=ErrorCode.TokenError.value[1], scene="check_token: no token")
+            raise BaseError(
+                code=ErrorCode.TokenError.value[0],
+                msg=ErrorCode.TokenError.value[1],
+                scene="check_token: no token",
+            )
 
         _json = cls.decode_token(token)
         _uid = _json.get("uid")
         if not _uid:
-            raise BaseError(code=ErrorCode.TokenError.value[0], msg=ErrorCode.TokenError.value[1], scene="check_token: no uid")
+            raise BaseError(
+                code=ErrorCode.TokenError.value[0],
+                msg=ErrorCode.TokenError.value[1],
+                scene="check_token: no uid",
+            )
 
         # 查找token
         _token = cls.get_token(_uid)
         if not _token:
-            raise BaseError(code=ErrorCode.TokenExpError.value[0], msg=ErrorCode.TokenExpError.value[1], scene="check_token: redis no token")
+            raise BaseError(
+                code=ErrorCode.TokenExpError.value[0],
+                msg=ErrorCode.TokenExpError.value[1],
+                scene="check_token: redis no token",
+            )
         elif _token != token:
-            raise BaseError(code=ErrorCode.TokenError.value[0], msg=ErrorCode.TokenError.value[1], scene="check_token: token is not same")
+            raise BaseError(
+                code=ErrorCode.TokenError.value[0],
+                msg=ErrorCode.TokenError.value[1],
+                scene="check_token: token is not same",
+            )
 
         # 查找用户信息
         async with MysqlHelper.get_async_session() as session:
             account = await account_dao.get_by_id(session, _uid)
 
         if not account:
-            raise BaseError(code=ErrorCode.TokenError.value[0], msg=ErrorCode.TokenError.value[1], scene="check_token: account not exist")
+            raise BaseError(
+                code=ErrorCode.TokenError.value[0],
+                msg=ErrorCode.TokenError.value[1],
+                scene="check_token: account not exist",
+            )
 
         return account
 
 
 # 接口依赖注入（获取用户信息）
-async def get_user_info(authorization: HTTPAuthorizationCredentials = Depends(security)) -> Account:
+async def get_user_info(
+    authorization: HTTPAuthorizationCredentials = Depends(security),
+) -> Account:
     token = authorization.credentials
-    logger.info(f'{token=}')
+    logger.info(f"{token=}")
     return await AuthService.check_token(token)

@@ -13,6 +13,8 @@ async def get_by_id(session: AsyncSession, uid: int):
 
 # 查询用户（账号密码）
 async def get_by_account(session: AsyncSession, account: str):
-    query_item_result = await session.execute(select(Account).where(Account.account == account))
+    query_item_result = await session.execute(
+        select(Account).where(Account.account == account)
+    )
     query_item = query_item_result.scalar()
     return query_item

@@ -13,8 +13,12 @@ class User(Base):
     name: Mapped[Optional[str]] = mapped_column(comment="名字")
     age: Mapped[Optional[int]] = mapped_column(comment="年龄")
     sex: Mapped[Optional[int]] = mapped_column(comment="性别")
-    create_time: Mapped[datetime] = mapped_column(default=datetime.now, comment="创建时间")
-    update_time: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now, comment="更新时间")
+    create_time: Mapped[datetime] = mapped_column(
+        default=datetime.now, comment="创建时间"
+    )
+    update_time: Mapped[datetime] = mapped_column(
+        default=datetime.now, onupdate=datetime.now, comment="更新时间"
+    )
 
 
 @unique

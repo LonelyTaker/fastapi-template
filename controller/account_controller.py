@@ -10,12 +10,16 @@ from sql import account_dao
 from service.auth_service import AuthService, get_user_info
 
 logger = logging.getLogger()
-router = APIRouter(prefix=f'/account', tags=['账号相关接口'])
+router = APIRouter(prefix=f"/account", tags=["账号相关接口"])
 
 
 @router.post("/login", response_model=BaseRes)
 @LoggingHelper.log_request
-async def delete(request: Request, payload: LoginReq, session=Depends(MysqlHelper.depends_async_session)):
+async def login(
+    request: Request,
+    payload: LoginReq,
+    session=Depends(MysqlHelper.depends_async_session),
+):
     account_info = await account_dao.get_by_account(session, payload.account)
     if not account_info:
         raise BaseError(*ErrorCode.AccountNotFountError.value, scene="login")
@@ -31,18 +35,12 @@ async def delete(request: Request, payload: LoginReq, session=Depends(MysqlHelpe
     return {
         "code": ErrorCode.Ok.value[0],
         "msg": ErrorCode.Ok.value[1],
-        "data": {
-            "userInfo": {},
-            "token": token
-        }
+        "data": {"userInfo": {}, "token": token},
     }
 
 
 @router.get("/test", response_model=BaseRes)
 @LoggingHelper.log_request
-async def delete(request: Request, user_info: Account = Depends(get_user_info)):
+async def test(request: Request, user_info: Account = Depends(get_user_info)):
     logger.info(user_info)
-    return {
-        "code": ErrorCode.Ok.value[0],
-        "msg": ErrorCode.Ok.value[1]
-    }
+    return {"code": ErrorCode.Ok.value[0], "msg": ErrorCode.Ok.value[1]}
