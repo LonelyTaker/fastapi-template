@@ -1,0 +1,31 @@
+app:
+  name: example-service
+  version: v1
+  host: 0.0.0.0
+  port: 7866
+
+log:
+  path: ./logs/
+  prefix: example-service_
+
+token:
+  # 生成jwt的key
+  secret_key: xxx
+  # token过期时间（秒）
+  expiration: 86400
+
+mysql:
+  # 连接地址
+  url: mysql+aiomysql://[用户名]:[密码]@[IP]:[端口号]/[数据库名]?charset=utf8mb4
+  # 超过链接池大小外最多创建的链接
+  max_overflow: 0
+  # 链接池大小
+  pool_size: 50
+  # 链接池中没有可用链接则最多等待的秒数，超过该秒数后报错
+  pool_timeout: 10
+  # 多久之后对链接池中的链接进行一次回收
+  pool_recycle: 1
+  # 查看原生语句（调试用）
+  echo: false
+  # 查看链接池（调试用）
+  echo_pool: false

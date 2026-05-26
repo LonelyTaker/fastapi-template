@@ -3,11 +3,10 @@ from enum import Enum, unique
 
 
 # 自定义错误类型
-class BaseError(Exception):
-    def __init__(self, code: int, msg: str, scene: str = ""):
+class StdError(Exception):
+    def __init__(self, code: int, msg: str):
         self.code = code
         self.msg = msg
-        self.scene = scene
 
     def __str__(self):
         return json.dumps(self.__dict__, ensure_ascii=False)

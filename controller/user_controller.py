@@ -1,27 +1,27 @@
-import logging
 from fastapi import APIRouter, Request, Depends
 
-from lib.logging_helper import LoggingHelper
-from lib.mysql_helper import MysqlHelper
+from lib.logging import LoggingHelper, logger
+from lib.mysql import MysqlHelper
 
-from model import BaseRes, BaseError, ErrorCode
-from model.user import UserAddReq, UserDelReq, UserUpdateReq, UserListReq
-from sql import user_dao
+from model.res import StdSimpleRes, StdPagingListRes
+from model.error import StdError, ErrorCode
+from model.schema.user import UserAddReq, UserDelReq, UserUpdateReq, UserListReq
 
-logger = logging.getLogger()
+from sql import UserDao
+
 router = APIRouter(prefix=f"/user", tags=["用户相关接口"])
 
 
-@router.post("/add", response_model=BaseRes)
+@router.post("/add", response_model=StdSimpleRes)
 @LoggingHelper.log_request
 async def add(
     request: Request,
     payload: UserAddReq,
-    session=Depends(MysqlHelper.depends_async_session),
+    conn=Depends(MysqlHelper.depends_async_connection),
 ):
     try:
-        await user_dao.add_one(
-            session,
+        await UserDao.add_one(
+            conn,
             {
                 "name": payload.name,
                 "age": payload.age,
@@ -30,33 +30,33 @@ async def add(
         )
     except Exception as e:
         logger.error(str(e))
-        raise BaseError(*ErrorCode.UserAddError.value, scene="add")
+        raise StdError(*ErrorCode.UserAddError.value)
 
-    return {"code": ErrorCode.Ok.value[0], "msg": ErrorCode.Ok.value[1]}
+    return StdSimpleRes.create(*ErrorCode.Ok.value)
 
 
-@router.post("/delete", response_model=BaseRes)
+@router.post("/delete", response_model=StdSimpleRes)
 @LoggingHelper.log_request
 async def delete(
     request: Request,
     payload: UserDelReq,
-    session=Depends(MysqlHelper.depends_async_session),
+    conn=Depends(MysqlHelper.depends_async_connection),
 ):
     try:
-        await user_dao.del_by_id(session, payload.userId)
+        await UserDao.del_by_id(conn, payload.userId)
     except Exception as e:
         logger.error(str(e))
-        raise BaseError(*ErrorCode.UserDelError.value, scene="delete")
+        raise StdError(*ErrorCode.UserDelError.value)
 
-    return {"code": ErrorCode.Ok.value[0], "msg": ErrorCode.Ok.value[1]}
+    return StdSimpleRes.create(*ErrorCode.Ok.value)
 
 
-@router.post("/update", response_model=BaseRes)
+@router.post("/update", response_model=StdSimpleRes)
 @LoggingHelper.log_request
 async def update(
     request: Request,
     payload: UserUpdateReq,
-    session=Depends(MysqlHelper.depends_async_session),
+    conn=Depends(MysqlHelper.depends_async_connection),
 ):
     data = {}
     if payload.name is not None:
@@ -67,35 +67,32 @@ async def update(
         data["sex"] = payload.sex.value
 
     try:
-        await user_dao.update_by_id(session, payload.userId, data)
+        await UserDao.update_by_id(conn, payload.userId, data)
     except Exception as e:
         logger.error(str(e))
-        raise BaseError(*ErrorCode.UserUpdateError.value, scene="update")
+        raise StdError(*ErrorCode.UserUpdateError.value)
 
-    return {"code": ErrorCode.Ok.value[0], "msg": ErrorCode.Ok.value[1]}
+    return StdSimpleRes.create(*ErrorCode.Ok.value)
 
 
-@router.post("/list", response_model=BaseRes)
+@router.post("/list", response_model=StdPagingListRes)
 @LoggingHelper.log_request
 async def get_list(
     request: Request,
     payload: UserListReq,
-    session=Depends(MysqlHelper.depends_async_session),
+    conn=Depends(MysqlHelper.depends_async_connection),
 ):
     try:
-        query_total, query_list = await user_dao.get_list(session, payload)
+        query_total, query_list = await UserDao.get_list(conn, payload)
     except Exception as e:
         logger.error(str(e))
-        raise BaseError(*ErrorCode.UserListError.value, scene="get_list")
+        raise StdError(*ErrorCode.UserListError.value)
 
-    return {
-        "code": ErrorCode.Ok.value[0],
-        "msg": ErrorCode.Ok.value[1],
-        "data": {
-            "total": query_total,
-            "list": [
-                {"id": row.id, "name": row.name, "age": row.age, "sex": row.sex}
-                for row in query_list
-            ],
-        },
-    }
+    return StdPagingListRes.create(
+        *ErrorCode.Ok.value,
+        [
+            {"id": row.id, "name": row.name, "age": row.age, "sex": row.sex}
+            for row in query_list
+        ],
+        query_total or 0,
+    )

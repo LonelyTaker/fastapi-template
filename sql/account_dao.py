@@ -1,20 +1,25 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncConnection
 from sqlalchemy import select
 
-from model.account import Account
+from model.table import Account
 
 
-# 查询用户（id）
-async def get_by_id(session: AsyncSession, uid: int):
-    query_item_result = await session.execute(select(Account).where(Account.id == uid))
-    query_item = query_item_result.scalar()
-    return query_item
+class AccountDao:
 
+    @staticmethod
+    async def get_by_id(conn: AsyncConnection, uid: int):
+        """查询用户（id）"""
+        query_item_result = await conn.execute(
+            select(Account).where(Account.c.id == uid)
+        )
+        query_item = query_item_result.fetchone()
+        return query_item
 
-# 查询用户（账号密码）
-async def get_by_account(session: AsyncSession, account: str):
-    query_item_result = await session.execute(
-        select(Account).where(Account.account == account)
-    )
-    query_item = query_item_result.scalar()
-    return query_item
+    @staticmethod
+    async def get_by_account(conn: AsyncConnection, account: str):
+        """查询用户（账号密码）"""
+        query_item_result = await conn.execute(
+            select(Account).where(Account.c.account == account)
+        )
+        query_item = query_item_result.fetchone()
+        return query_item

@@ -1,10 +1,14 @@
 from fastapi import APIRouter
-from setting import SERVICE_NAME, SERVICE_VERSION
 
-from controller import user_controller, account_controller
+from lib.configure import Configure
+
+from . import user_controller, account_controller
+
+_name = Configure.get("app", "name")
+_version = Configure.get("app", "version")
 
 # 接口公共前缀
-router = APIRouter(prefix=f"/{SERVICE_NAME}/{SERVICE_VERSION}")
+router = APIRouter(prefix=f"/{_name}/{_version}")
 
 # 各功能模块接口
 router.include_router(user_controller.router)

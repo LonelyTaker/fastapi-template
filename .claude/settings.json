@@ -1,0 +1,9 @@
+{
+  "skills": {
+    "git-commit": {
+      "description": "自动提交暂存的代码变更，生成符合规范的 commit message",
+      "path": ".claude/skills/git-commit.md"
+    }
+  },
+  "autoMemoryEnabled": true
+}
