@@ -28,14 +28,6 @@ class PageListData(BaseModel, Generic[T]):
     totalCount: int = 0
 
 
-class SimpleData(BaseModel):
-    message: str | None = None
-
-
-class ErrorData(BaseModel):
-    message: str | None = None
-
-
 # 基础结果类
 class StdResData(BaseModel):
     code: int
@@ -44,12 +36,13 @@ class StdResData(BaseModel):
     data: Any = None
 
 
+# 标准结果
 class StdEntityRes(StdResData, Generic[T]):
     type: str = StdDataType.entity.value
     data: EntityData = EntityData()
 
     @classmethod
-    def create(cls, code: int, message: str, entity: T | None = None):
+    def create(cls, code: int, message: str, entity: T):
         return cls(
             code=code,
             message=message,
@@ -57,15 +50,17 @@ class StdEntityRes(StdResData, Generic[T]):
         )
 
 
+# 列表结果
 class StdListRes(StdResData, Generic[T]):
     type: str = StdDataType.list.value
     data: ListData = ListData()
 
     @classmethod
-    def create(cls, code: int, message: str, list: List[T] | None = None):
-        return cls(code=code, message=message, data=ListData(list=list or []))
+    def create(cls, code: int, message: str, list: List[T]):
+        return cls(code=code, message=message, data=ListData(list=list))
 
 
+# 分页列表结果
 class StdPagingListRes(StdResData, Generic[T]):
     type: str = StdDataType.page_list.value
     data: PageListData = PageListData()
@@ -75,29 +70,29 @@ class StdPagingListRes(StdResData, Generic[T]):
         cls,
         code: int,
         message: str,
-        list: List[T] | None = None,
-        totalCount: int = 0,
+        list: List[T],
+        totalCount: int,
     ):
         return cls(
             code=code,
             message=message,
-            data=PageListData(list=list or [], totalCount=totalCount),
+            data=PageListData(list=list, totalCount=totalCount),
         )
 
 
+# 简易结果
 class StdSimpleRes(StdResData):
     type: str = StdDataType.simple.value
-    data: SimpleData = SimpleData()
 
     @classmethod
     def create(cls, code: int, message: str):
-        return cls(code=code, message=message, data=SimpleData(message=message))
+        return cls(code=code, message=message)
 
 
+# 错误结果
 class StdErrorRes(StdResData):
     type: str = StdDataType.error.value
-    data: ErrorData = ErrorData()
 
     @classmethod
     def create(cls, code: int, message: str):
-        return cls(code=code, message=message, data=ErrorData(message=message))
+        return cls(code=code, message=message)
