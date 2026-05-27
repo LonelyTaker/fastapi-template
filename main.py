@@ -5,8 +5,7 @@ from contextlib import asynccontextmanager
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
 
-from model.res import StdErrorRes
-from model.error import StdError, ErrorCode
+from model.base import StdError, ErrorCode, StdErrorRes
 
 from lib.configure import Configure
 from lib.logging import LoggingHelper, logger

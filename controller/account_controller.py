@@ -3,8 +3,7 @@ from fastapi import APIRouter, Request, Depends
 from lib.logging import LoggingHelper, logger
 from lib.mysql import MysqlHelper
 
-from model.res import StdEntityRes, StdSimpleRes
-from model.error import StdError, ErrorCode
+from model.base import StdError, ErrorCode, StdEntityRes, StdSimpleRes
 from model.schema.account import LoginReq
 
 from service import AuthService, get_user_info

@@ -9,7 +9,7 @@ from lib.mysql import MysqlHelper
 
 # from lib.redis import RedisHelper
 
-from model.error import StdError, ErrorCode
+from model.base import StdError, ErrorCode
 
 from sql import AccountDao
 
