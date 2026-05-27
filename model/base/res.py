@@ -38,11 +38,11 @@ class StdResData(BaseModel):
 
 # 标准结果
 class StdEntityRes(StdResData, Generic[T]):
-    type: str = StdDataType.entity.value
-    data: EntityData = EntityData()
+    type: str = Field(default=StdDataType.entity.value, description="响应类型")
+    data: EntityData = Field(default_factory=EntityData, description="响应数据")
 
     @classmethod
-    def create(cls, code: int, message: str, entity: T):
+    def create(cls, code: int, message: str, entity: T | None = None):
         return cls(
             code=code,
             message=message,
@@ -52,8 +52,8 @@ class StdEntityRes(StdResData, Generic[T]):
 
 # 列表结果
 class StdListRes(StdResData, Generic[T]):
-    type: str = StdDataType.list.value
-    data: ListData = ListData()
+    type: str = Field(default=StdDataType.list.value, description="响应类型")
+    data: ListData = Field(default_factory=ListData, description="响应数据")
 
     @classmethod
     def create(cls, code: int, message: str, list: List[T]):
@@ -62,8 +62,8 @@ class StdListRes(StdResData, Generic[T]):
 
 # 分页列表结果
 class StdPagingListRes(StdResData, Generic[T]):
-    type: str = StdDataType.page_list.value
-    data: PageListData = PageListData()
+    type: str = Field(default=StdDataType.page_list.value, description="响应类型")
+    data: PageListData = Field(default_factory=PageListData, description="响应数据")
 
     @classmethod
     def create(
@@ -82,7 +82,7 @@ class StdPagingListRes(StdResData, Generic[T]):
 
 # 简易结果
 class StdSimpleRes(StdResData):
-    type: str = StdDataType.simple.value
+    type: str = Field(default=StdDataType.simple.value, description="响应类型")
 
     @classmethod
     def create(cls, code: int, message: str):
@@ -91,7 +91,7 @@ class StdSimpleRes(StdResData):
 
 # 错误结果
 class StdErrorRes(StdResData):
-    type: str = StdDataType.error.value
+    type: str = Field(default=StdDataType.error.value, description="响应类型")
 
     @classmethod
     def create(cls, code: int, message: str):
