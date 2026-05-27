@@ -2,7 +2,7 @@ from sqlalchemy import MetaData
 
 metadata = MetaData()
 
-from .account import Account
-from .user import User
+from .account import account_table
+from .user import user_table
 
-__all__ = ["metadata", "Account", "User"]
+__all__ = ["metadata", "account_table", "user_table"]

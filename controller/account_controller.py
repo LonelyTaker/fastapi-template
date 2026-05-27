@@ -7,9 +7,9 @@ from model.res import StdEntityRes, StdSimpleRes
 from model.error import StdError, ErrorCode
 from model.schema.account import LoginReq
 
-from sql import AccountDao
+from service import AuthService, get_user_info
 
-from service.auth_service import AuthService, get_user_info
+from sql import AccountDao
 
 router = APIRouter(prefix=f"/account", tags=["账号相关接口"])
 
@@ -25,13 +25,13 @@ async def login(
     if not account_info:
         raise StdError(*ErrorCode.AccountNotFountError.value)
 
-    if account_info.password != payload.password:
+    if account_info.get("password") != payload.password:
         raise StdError(*ErrorCode.AccountPwdError.value)
 
     # 创建token
-    token = AuthService.create_token(account_info.id, {})
+    token = AuthService.create_token(account_info["id"], {})
     # 存储token
-    AuthService.set_token(account_info, token)
+    AuthService.set_token(account_info["id"], token)
 
     return StdEntityRes.create(*ErrorCode.Ok.value, {"userInfo": {}, "token": token})
 

@@ -4,7 +4,7 @@ from sqlalchemy import Table, Column, Integer, String, DateTime, Index
 from model.table import metadata
 
 # 账号表
-Account = Table(
+account_table = Table(
     "account",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),

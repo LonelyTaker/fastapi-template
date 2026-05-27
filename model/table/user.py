@@ -4,7 +4,7 @@ from sqlalchemy import Table, Column, Integer, String, DateTime
 from model.table import metadata
 
 # 用户表
-User = Table(
+user_table = Table(
     "user",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),

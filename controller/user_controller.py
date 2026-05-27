@@ -28,6 +28,7 @@ async def add(
                 "sex": payload.sex.value if payload.sex is not None else None,
             },
         )
+        await conn.commit()
     except Exception as e:
         logger.error(str(e))
         raise StdError(*ErrorCode.UserAddError.value)
@@ -44,6 +45,7 @@ async def delete(
 ):
     try:
         await UserDao.del_by_id(conn, payload.userId)
+        await conn.commit()
     except Exception as e:
         logger.error(str(e))
         raise StdError(*ErrorCode.UserDelError.value)
@@ -68,6 +70,7 @@ async def update(
 
     try:
         await UserDao.update_by_id(conn, payload.userId, data)
+        await conn.commit()
     except Exception as e:
         logger.error(str(e))
         raise StdError(*ErrorCode.UserUpdateError.value)
@@ -83,16 +86,11 @@ async def get_list(
     conn=Depends(MysqlHelper.depends_async_connection),
 ):
     try:
-        query_total, query_list = await UserDao.get_list(conn, payload)
+        query_total, query_list = await UserDao.get_list(
+            conn, payload.pageNo, payload.pageSize
+        )
     except Exception as e:
         logger.error(str(e))
         raise StdError(*ErrorCode.UserListError.value)
 
-    return StdPagingListRes.create(
-        *ErrorCode.Ok.value,
-        [
-            {"id": row.id, "name": row.name, "age": row.age, "sex": row.sex}
-            for row in query_list
-        ],
-        query_total or 0,
-    )
+    return StdPagingListRes.create(*ErrorCode.Ok.value, query_list, query_total)
