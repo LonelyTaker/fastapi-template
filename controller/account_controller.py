@@ -32,11 +32,11 @@ async def login(
     # 存储token
     AuthService.set_token(account_info["id"], token)
 
-    return StdEntityRes.create(*ErrorCode.Ok.value, {"userInfo": {}, "token": token})
+    return StdEntityRes.create({"userInfo": {}, "token": token})
 
 
 @router.get("/test", response_model=StdSimpleRes)
 @LoggingHelper.log_request
 async def test(request: Request, user_info=Depends(get_user_info)):
     logger.info(user_info)
-    return StdSimpleRes.create(*ErrorCode.Ok.value)
+    return StdSimpleRes()

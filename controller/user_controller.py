@@ -32,7 +32,7 @@ async def add(
         logger.error(str(e))
         raise StdError(*ErrorCode.UserAddError.value)
 
-    return StdSimpleRes.create(*ErrorCode.Ok.value)
+    return StdSimpleRes()
 
 
 @router.post("/delete", response_model=StdSimpleRes)
@@ -49,7 +49,7 @@ async def delete(
         logger.error(str(e))
         raise StdError(*ErrorCode.UserDelError.value)
 
-    return StdSimpleRes.create(*ErrorCode.Ok.value)
+    return StdSimpleRes()
 
 
 @router.post("/update", response_model=StdSimpleRes)
@@ -74,7 +74,7 @@ async def update(
         logger.error(str(e))
         raise StdError(*ErrorCode.UserUpdateError.value)
 
-    return StdSimpleRes.create(*ErrorCode.Ok.value)
+    return StdSimpleRes()
 
 
 @router.post("/list", response_model=StdPagingListRes)
@@ -92,4 +92,4 @@ async def get_list(
         logger.error(str(e))
         raise StdError(*ErrorCode.UserListError.value)
 
-    return StdPagingListRes.create(*ErrorCode.Ok.value, query_list, query_total)
+    return StdPagingListRes.create(query_list, query_total)
