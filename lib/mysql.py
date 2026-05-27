@@ -11,19 +11,17 @@ class MysqlHelper:
     __engine: AsyncEngine
 
     @classmethod
-    async def depends_async_connection(cls):
-        """依赖注入：获取连接"""
+    @contextlib.asynccontextmanager
+    async def get_async_connection(cls):
+        """上下文管理器：获取连接"""
         async with cls.__engine.connect() as conn:
             yield conn
 
     @classmethod
-    @contextlib.asynccontextmanager
-    async def get_async_connection(cls):
-        conn = await cls.__engine.connect()
-        try:
+    async def depends_async_connection(cls):
+        """依赖注入：获取连接"""
+        async with cls.get_async_connection() as conn:
             yield conn
-        finally:
-            await conn.close()
 
     @classmethod
     async def init(cls):

@@ -1,6 +1,3 @@
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
 -- ----------------------------
 -- Table structure for account
 -- ----------------------------
@@ -14,4 +11,7 @@ CREATE TABLE IF NOT EXISTS `account`  (
   UNIQUE INDEX `uk_account` (`account`)
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- ----------------------------
+-- Records of account
+-- ----------------------------
+INSERT INTO `account` (`account`, `password`) VALUES ('1000', '123456789');
