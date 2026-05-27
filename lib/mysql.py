@@ -19,7 +19,7 @@ class MysqlHelper:
     @classmethod
     @contextlib.asynccontextmanager
     async def get_async_connection(cls):
-        conn = cls.__engine.connect()
+        conn = await cls.__engine.connect()
         try:
             yield conn
         finally:

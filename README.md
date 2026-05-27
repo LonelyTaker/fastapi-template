@@ -8,34 +8,50 @@ fastapi项目简易模板
 ## 目录结构
 
 ```tex
-├── controller                            controller控制层
-│    ├── user_controller
+├── controller                         controller控制层
+│    ├── account_controller.py
+│    ├── user_controller.py
 │    └── ...
-├── db                                    sql脚本存放目录
-│    ├── 1.0.0                            按版本号归档
-│    │    └── user.py
+├── db                                 sql脚本存放目录
+│    ├── 1.0.0                         按版本号归档
+│    │    └── user.sql
 │    └── ...
-├── lib                                   相关辅助/工具类
-│    ├── logging_helper.py                日志配置类
-│    ├── mysql_helper.py                  mysql辅助类
-│    └── utils.py                         常用函数
-├── logs                                  日志存放目录
+├── lib                                相关辅助/工具类
+│    ├── configure.py                  配置加载类
+│    ├── logging.py                    日志配置类
+│    ├── mysql.py                      mysql辅助类
 │    └── ...
-├── model                                 model实体层
-│    ├── base.py                          ORM基础类/业务基础类
-│    ├── error.py                         自定义异常相关
-│    ├── user.py
+├── logs                               日志存放目录
 │    └── ...
-├── service                               service业务服务层
+├── model                              model实体层
+│    ├── base                          基础模块
+│    │    ├── error.py                 自定义异常相关
+│    │    └── res.py                   统一响应模型
+│    ├── schema                        请求/响应模型
+│    │    ├── account.py
+│    │    ├── user.py
+│    │    └── ...
+│    ├── table                         ORM表模型
+│    │    ├── account.py
+│    │    ├── user.py
+│    │    └── ...
 │    └── ...
-├── sql                                   dao数据访问层
+├── service                            service业务服务层
+│    ├── auth_service.py
+│    └── ...
+├── sql                                dao数据访问层
+│    ├── account_dao.py
 │    ├── user_dao.py
 │    └── ...
-├── .gitignore                            git忽略文件
-├── main.py                               入口文件
-├── README.md                             项目说明
-├── requirements.py                       项目依赖说明
-└── setting.py                            配置文件
+├── utils                              常用工具函数
+│    └── ...
+├── .gitignore                         git忽略文件
+├── config.yaml                        配置文件
+├── docker-compose.yml                 docker-compose配置
+├── Dockerfile                         docker镜像构建文件
+├── main.py                            入口文件
+├── README.md                          项目说明
+└── requirements.txt                   项目依赖说明
 ```
 
 项目中`user`、`account`相关内容为示例代码，进行开发时请删除
