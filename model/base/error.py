@@ -2,16 +2,6 @@ import json
 from enum import Enum, unique
 
 
-# 自定义错误类型
-class StdError(Exception):
-    def __init__(self, code: int, msg: str):
-        self.code = code
-        self.msg = msg
-
-    def __str__(self):
-        return json.dumps(self.__dict__, ensure_ascii=False)
-
-
 # 自定义错误码
 @unique
 class ErrorCode(Enum):
@@ -31,3 +21,21 @@ class ErrorCode(Enum):
     UserListError = (1104, "查询用户列表失败")
     AccountNotFountError = (1201, "用户不存在")
     AccountPwdError = (1202, "密码错误")
+
+    @property
+    def code(self) -> int:
+        return self.value[0]
+
+    @property
+    def msg(self) -> str:
+        return self.value[1]
+
+
+# 自定义错误类型
+class StdError(Exception):
+    def __init__(self, code: int, msg: str):
+        self.code = code
+        self.msg = msg
+
+    def __str__(self):
+        return json.dumps(self.__dict__, ensure_ascii=False)

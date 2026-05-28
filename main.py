@@ -39,8 +39,8 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
     return JSONResponse(
         status_code=200,
         content=StdErrorRes(
-            code=ErrorCode.ParamsError.value[0], message=exc.__str__()
-        ).model_dump(),
+            code=ErrorCode.ParamsError.code, message=exc.__str__()
+        ).model_dump(mode="json"),
     )
 
 
@@ -50,7 +50,7 @@ async def base_exception_handler(request: Request, exc: StdError):
     logger.error(f"{request.url.path} request failed: {exc}")
     return JSONResponse(
         status_code=200,
-        content=StdErrorRes(code=exc.code, message=exc.msg).model_dump(),
+        content=StdErrorRes(code=exc.code, message=exc.msg).model_dump(mode="json"),
     )
 
 
@@ -60,7 +60,7 @@ async def exception_handler(request: Request, exc: Exception):
     logger.error(f"{request.url.path} request failed: {exc}")
     return JSONResponse(
         status_code=200,
-        content=StdErrorRes().model_dump(),
+        content=StdErrorRes().model_dump(mode="json"),
     )
 
 

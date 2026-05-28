@@ -18,9 +18,9 @@ class StdDataType(Enum):
 
 # 结果基础类
 class StdRes(BaseModel):
-    code: int = Field(default=ErrorCode.Ok.value[0], description="状态码")
-    message: str = Field(default=ErrorCode.Ok.value[1], description="提示信息")
-    type: str = Field(..., description="响应类型")
+    type: StdDataType = Field(..., description="响应类型")
+    code: int = Field(default=ErrorCode.Ok.code, description="状态码")
+    message: str = Field(default=ErrorCode.Ok.msg, description="提示信息")
     data: Optional[Any] = Field(default=None, description="响应数据")
 
 
@@ -30,7 +30,7 @@ class EntityData(BaseModel, Generic[T]):
 
 
 class StdEntityRes(StdRes, Generic[T]):
-    type: str = Field(default=StdDataType.Entity.value, description="响应类型")
+    type: StdDataType = Field(default=StdDataType.Entity, description="响应类型")
     data: EntityData = Field(default_factory=EntityData, description="响应数据")
 
     @classmethod
@@ -46,7 +46,7 @@ class ListData(BaseModel, Generic[T]):
 
 
 class StdListRes(StdRes, Generic[T]):
-    type: str = Field(default=StdDataType.List.value, description="响应类型")
+    type: StdDataType = Field(default=StdDataType.List, description="响应类型")
     data: ListData = Field(default_factory=ListData, description="响应数据")
 
     @classmethod
@@ -61,7 +61,7 @@ class PageListData(BaseModel, Generic[T]):
 
 
 class StdPagingListRes(StdRes, Generic[T]):
-    type: str = Field(default=StdDataType.PageList.value, description="响应类型")
+    type: StdDataType = Field(default=StdDataType.PageList, description="响应类型")
     data: PageListData = Field(default_factory=PageListData, description="响应数据")
 
     @classmethod
@@ -75,13 +75,11 @@ class StdPagingListRes(StdRes, Generic[T]):
 
 # 简易结果
 class StdSimpleRes(StdRes):
-    type: str = Field(default=StdDataType.Simple.value, description="响应类型")
+    type: StdDataType = Field(default=StdDataType.Simple, description="响应类型")
 
 
 # 错误结果
 class StdErrorRes(StdRes):
-    code: int = Field(default=ErrorCode.UnexpectedError.value[0], description="状态码")
-    message: str = Field(
-        default=ErrorCode.UnexpectedError.value[1], description="提示信息"
-    )
-    type: str = Field(default=StdDataType.Error.value, description="响应类型")
+    type: StdDataType = Field(default=StdDataType.Error, description="响应类型")
+    code: int = Field(default=ErrorCode.UnexpectedError.code, description="状态码")
+    message: str = Field(default=ErrorCode.UnexpectedError.msg, description="提示信息")
